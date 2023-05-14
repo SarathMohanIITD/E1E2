@@ -140,8 +140,7 @@ model.test(idx_test)
 
 ################################################################################################################
 
-perturbed_adj2, features, labels = preprocess(perturbed_adj, features, labels, preprocess_adj=False, sparse=True, device=device)
-gcnAtt_outputs=model.fit(features, perturbed_adj2, labels, idx_train, idx_val, verbose=True, train_iters=args.epochs)
+gcnAtt_outputs=model.fit(features, perturbed_adj1, labels, idx_train, idx_val, verbose=True, train_iters=args.epochs)
 model.test(idx_test)
 
 ###################################################################################################################
@@ -149,7 +148,6 @@ model.test(idx_test)
 
 # GCN without ptb
 
-perturbed_adj3, features, labels = preprocess(perturbed_adj, features, labels, preprocess_adj=False, sparse=True, device=device)
 gcn_outputs=model.fit(features, adj, labels, idx_train, idx_val, verbose=True, train_iters=args.epochs)
 model.test(idx_test)
 
