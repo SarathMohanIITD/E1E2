@@ -5,7 +5,7 @@ import numpy as np
 import torch
 
 #from deeprobust.graph.defense import GCN
-import GCN
+#import GCN
 from deeprobust.graph.data import Dataset, PrePtbDataset
 from deeprobust.graph.utils import preprocess, encode_onehot, get_train_val_test
 
@@ -127,11 +127,11 @@ model = BoundedGCN(nfeat=features.shape[1],
             dropout=args.dropout, device=device,bound=args.bound)
 from Bounded_two_stage import RwlGNN
 
-perturbed_adj, features, labels = preprocess(perturbed_adj, features, labels, preprocess_adj=False, device=device)
+perturbed_adj1, features, labels = preprocess(perturbed_adj, features, labels, preprocess_adj=False, device=device)
 
 rwlgnn = RwlGNN(model, args, device)
 
-adj_new = rwlgnn.fit(features, perturbed_adj)
+adj_new = rwlgnn.fit(features, perturbed_adj1)
 
 bounded_outputs = model.fit(features, adj_new, labels, idx_train, idx_val, verbose=True, train_iters=args.epochs,
           bound=args.bound)
@@ -140,8 +140,8 @@ model.test(idx_test)
 
 ################################################################################################################
 
-perturbed_adj, features, labels = preprocess(perturbed_adj, features, labels, preprocess_adj=False, sparse=True, device=device)
-gcnAtt_outputs=model.fit(features, perturbed_adj, labels, idx_train, idx_val, verbose=True, train_iters=args.epochs)
+perturbed_adj2, features, labels = preprocess(perturbed_adj, features, labels, preprocess_adj=False, sparse=True, device=device)
+gcnAtt_outputs=model.fit(features, perturbed_adj2, labels, idx_train, idx_val, verbose=True, train_iters=args.epochs)
 model.test(idx_test)
 
 ###################################################################################################################
@@ -149,7 +149,7 @@ model.test(idx_test)
 
 # GCN without ptb
 
-perturbed_adj, features, labels = preprocess(perturbed_adj, features, labels, preprocess_adj=False, sparse=True, device=device)
+perturbed_adj3, features, labels = preprocess(perturbed_adj, features, labels, preprocess_adj=False, sparse=True, device=device)
 gcn_outputs=model.fit(features, adj, labels, idx_train, idx_val, verbose=True, train_iters=args.epochs)
 model.test(idx_test)
 
