@@ -124,10 +124,10 @@ class BoundedGCN(nn.Module):
             x = F.relu(self.gc1(x, adj))
         else:
             x = self.gc1(x, adj)
-
+        emb=x
         x = F.dropout(x, self.dropout, training=self.training)
         x = self.gc2(x, adj)
-        return F.log_softmax(x, dim=1)
+        return F.log_softmax(x, dim=1), emb
 
     def initialize(self):
         """Initialize parameters of GCN.
@@ -227,7 +227,7 @@ class BoundedGCN(nn.Module):
         for i in range(train_iters):
             self.train()
             optimizer.zero_grad()
-            output = self.forward(self.features, self.adj_norm)
+            output,emb = self.forward(self.features, self.adj_norm)
 
             self.l2_reg = 2 * self.bound**2 * (torch.log(torch.norm(self.gc1.weight)) + torch.log(torch.norm(self.gc2.weight)) )    # Added by me
 
@@ -245,9 +245,9 @@ class BoundedGCN(nn.Module):
                 print('Epoch {}, training loss: {}'.format(i, loss_train.item()))
 
             self.eval()
-            output = self.forward(self.features, self.adj_norm)
+            output,emb = self.forward(self.features, self.adj_norm)
 
-            self.list.append(output)
+            self.list.append(emb)
 
             loss_val = F.nll_loss(output[idx_val], labels[idx_val])
             acc_val = utils.accuracy(output[idx_val], labels[idx_val])

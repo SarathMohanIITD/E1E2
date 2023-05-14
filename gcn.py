@@ -123,10 +123,10 @@ class GCN(nn.Module):
             x = F.relu(self.gc1(x, adj))
         else:
             x = self.gc1(x, adj)
-
+        emb=x
         x = F.dropout(x, self.dropout, training=self.training)
         x = self.gc2(x, adj)
-        return F.log_softmax(x, dim=1)
+        return F.log_softmax(x, dim=1),emb
 
     def initialize(self):
         """Initialize parameters of GCN.
@@ -219,11 +219,8 @@ class GCN(nn.Module):
         for i in range(train_iters):
             self.train()
             optimizer.zero_grad()
-            output = self.forward(self.features, self.adj_norm)
+            output,emb = self.forward(self.features, self.adj_norm)
             loss_train = F.nll_loss(output[idx_train], labels[idx_train])
-
-
-
             loss_train.backward()
             optimizer.step()
 
@@ -232,8 +229,8 @@ class GCN(nn.Module):
                 print('Epoch {}, training loss: {}'.format(i, loss_train.item()))
 
             self.eval()
-            output = self.forward(self.features, self.adj_norm)
-            self.list.append(output)
+            output,emb = self.forward(self.features, self.adj_norm)
+            self.list.append(emb)
             loss_val = F.nll_loss(output[idx_val], labels[idx_val])
             acc_val = utils.accuracy(output[idx_val], labels[idx_val])
 

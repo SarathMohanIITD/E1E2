@@ -8,7 +8,7 @@ import torch
 #import GCN
 from deeprobust.graph.data import Dataset, PrePtbDataset
 from deeprobust.graph.utils import preprocess, encode_onehot, get_train_val_test
-
+from gcn import GCN
 
 
 # Training settings
@@ -139,7 +139,10 @@ model.test(idx_test)
 
 
 ################################################################################################################
-
+model = GCN(nfeat=features.shape[1],
+            nhid=args.hidden,
+            nclass=labels.max().item() + 1,
+            dropout=args.dropout, device=device)
 gcnAtt_outputs=model.fit(features, perturbed_adj1, labels, idx_train, idx_val, verbose=True, train_iters=args.epochs)
 model.test(idx_test)
 
@@ -154,4 +157,4 @@ model.test(idx_test)
 
 ##############################################################################################################
 
-print(bounded_outputs[1]-gcn_outputs[2])
+print(bounded_outputs[1]-gcn_outputs[1])
