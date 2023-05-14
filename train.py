@@ -4,7 +4,8 @@ import argparse
 import numpy as np
 import torch
 
-from deeprobust.graph.defense import GCN
+#from deeprobust.graph.defense import GCN
+from gcn import GCN
 from deeprobust.graph.data import Dataset, PrePtbDataset
 from deeprobust.graph.utils import preprocess, encode_onehot, get_train_val_test
 
@@ -112,60 +113,46 @@ if args.attack == 'meta' or args.attack == 'nettack':
 np.random.seed(args.seed)
 torch.manual_seed(args.seed)
 
-##########################
-if args.bounded == 'y':
-    from bounded_gcn import BoundedGCN
-    print("Using bounded gcn")
-    model = BoundedGCN(nfeat=features.shape[1],
-                nhid=args.hidden,
-                nclass=labels.max().item() + 1,
-                dropout=args.dropout, device=device,bound=args.bound)
-    #model = GCN(nfeat=features.shape[1],
-    #            nhid=args.hidden,
-    #            nclass=labels.max().item() + 1,
-    #          dropout=args.dropout, device=device)
-    if args.two_stage=="y":
-        from Bounded_two_stage import RwlGNN
-        print(" Debug ::: Selected Bounded_two_stage ")
-        print(f'Debug ::: Bound = {args.bound}')
-    else:
-        from BoundedJointLearning import RwlGNN
-else:
-   # from bounded_gcn import BoundedGCN
-    model = GCN(nfeat=features.shape[1],
-                nhid=args.hidden,
-                nclass=labels.max().item() + 1,
-              dropout=args.dropout, device=device)
-    if args.two_stage=="y":
-        from RwlGNN_two import RwlGNN
 
-    else:
-        from RwlGNN import RwlGNN
+###############################################################################################################
 
-######################################
-
-if args.only_gcn:
-
-    perturbed_adj, features, labels = preprocess(perturbed_adj, features, labels, preprocess_adj=False, sparse=True, device=device)
-
-   # features = torch.norm(features,p='fro')
-
-    model.fit(features, perturbed_adj, labels, idx_train, idx_val, verbose=True, train_iters=args.epochs)
-    model.test(idx_test)
+#Bounded GCN
 
 
-else:
-    perturbed_adj, features, labels = preprocess(perturbed_adj, features, labels, preprocess_adj=False, device=device)
+from bounded_gcn import BoundedGCN
+print("Using bounded gcn")
+model = BoundedGCN(nfeat=features.shape[1],
+            nhid=args.hidden,
+            nclass=labels.max().item() + 1,
+            dropout=args.dropout, device=device,bound=args.bound)
+from Bounded_two_stage import RwlGNN
 
-    #col_norms = torch.norm(features, dim=0)
-    #features = features/col_norms
+perturbed_adj, features, labels = preprocess(perturbed_adj, features, labels, preprocess_adj=False, device=device)
 
-    rwlgnn = RwlGNN(model, args, device)
-    if args.two_stage=="y":
-        adj_new = rwlgnn.fit(features, perturbed_adj)
-        model.fit(features, adj_new, labels, idx_train, idx_val, verbose=True, train_iters=args.epochs,bound=args.bound) #######
-        model.test(idx_test)
-    else:
-        rwlgnn.fit(features, perturbed_adj, labels, idx_train, idx_val)
-        rwlgnn.test(features, labels, idx_test)
+rwlgnn = RwlGNN(model, args, device)
+
+adj_new = rwlgnn.fit(features, perturbed_adj)
+
+bounded_outputs = model.fit(features, adj_new, labels, idx_train, idx_val, verbose=True, train_iters=args.epochs,
+          bound=args.bound)
+model.test(idx_test)
+
+
+################################################################################################################
+
+perturbed_adj, features, labels = preprocess(perturbed_adj, features, labels, preprocess_adj=False, sparse=True, device=device)
+gcnAtt_outputs=model.fit(features, perturbed_adj, labels, idx_train, idx_val, verbose=True, train_iters=args.epochs)
+model.test(idx_test)
+
+###################################################################################################################
+
+
+# GCN without ptb
+
+perturbed_adj, features, labels = preprocess(perturbed_adj, features, labels, preprocess_adj=False, sparse=True, device=device)
+gcn_outputs=model.fit(features, adj, labels, idx_train, idx_val, verbose=True, train_iters=args.epochs)
+model.test(idx_test)
+
+
+##############################################################################################################
 

@@ -192,6 +192,7 @@ class BoundedGCN(nn.Module):
                 self._train_with_early_stopping(labels, idx_train, idx_val, train_iters, patience, verbose)
             else:
                 self._train_with_val(labels, idx_train, idx_val, train_iters, verbose)
+        return self.list
 
     def _train_without_val(self, labels, idx_train, train_iters, verbose):
         print("Training without val")
@@ -222,6 +223,7 @@ class BoundedGCN(nn.Module):
         best_loss_val = 100
         best_acc_val = 0
 
+        self.list = []
         for i in range(train_iters):
             self.train()
             optimizer.zero_grad()
@@ -244,6 +246,9 @@ class BoundedGCN(nn.Module):
 
             self.eval()
             output = self.forward(self.features, self.adj_norm)
+
+            self.list.append(output)
+
             loss_val = F.nll_loss(output[idx_val], labels[idx_val])
             acc_val = utils.accuracy(output[idx_val], labels[idx_val])
 
@@ -256,6 +261,7 @@ class BoundedGCN(nn.Module):
                 best_acc_val = acc_val
                 self.output = output
                 weights = deepcopy(self.state_dict())
+
 
         if verbose:
             print('=== picking the best model according to the performance on validation ===')
