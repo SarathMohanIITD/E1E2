@@ -115,7 +115,7 @@ torch.manual_seed(args.seed)
 
 
 ###############################################################################################################
-
+adj, feat, lab = preprocess(perturbed_adj, features, labels, preprocess_adj=False, device=device)
 #Bounded GCN
 
 
