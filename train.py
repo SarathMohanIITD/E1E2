@@ -5,7 +5,7 @@ import numpy as np
 import torch
 
 #from deeprobust.graph.defense import GCN
-from gcn import GCN
+import GCN
 from deeprobust.graph.data import Dataset, PrePtbDataset
 from deeprobust.graph.utils import preprocess, encode_onehot, get_train_val_test
 
@@ -156,3 +156,4 @@ model.test(idx_test)
 
 ##############################################################################################################
 
+print(bounded_outputs[1]-gcn_outputs[2])
