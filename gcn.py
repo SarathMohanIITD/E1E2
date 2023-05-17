@@ -304,7 +304,7 @@ class GCN(nn.Module):
             node testing indices
         """
         self.eval()
-        output = self.predict()
+        output,emb = self.predict()
         # output = self.output
         loss_test = F.nll_loss(output[idx_test], self.labels[idx_test])
         acc_test = utils.accuracy(output[idx_test], self.labels[idx_test])
