@@ -3,7 +3,7 @@ import time
 import argparse
 import numpy as np
 import torch
-
+import pandas as pd
 #from deeprobust.graph.defense import GCN
 #import GCN
 from deeprobust.graph.data import Dataset, PrePtbDataset
@@ -157,6 +157,6 @@ model.test(idx_test)
 
 
 ##############################################################################################################
-bounded_outputs= np.array(bounded_outputs)
+bounded_outputs= pd.DataFrame(bounded_outputs)
 bounded_outputs.shape
 print(bounded_outputs[1]-gcn_outputs[1])
