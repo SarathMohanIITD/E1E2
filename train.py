@@ -164,4 +164,14 @@ for i in range(len(bounded_outputs)):
 
 print(bounded_outputs-gcn_outputs)
 
-#print(bounded_outputs[1]-gcn_outputs[1])
+err1 =np.zeros((len(bounded_outputs), 16))
+err2 = np.zeros((len(bounded_outputs), 16))
+
+for i in range(len(bounded_outputs)):
+    err1[i]=bounded_outputs[i]-gcn_outputs
+    err2[i]=gcnAtt_outputs-gcn_outputs
+
+import matplotlib.pyplot as plt
+
+plt.plot(err1)
+plt.plot(err2)
