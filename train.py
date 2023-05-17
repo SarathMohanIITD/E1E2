@@ -157,6 +157,6 @@ model.test(idx_test)
 
 
 ##############################################################################################################
-bounded_outputs= np.array(bounded_outputs)
+bounded_outputs= torch.tensor(bounded_outputs)
 bounded_outputs.shape
 print(bounded_outputs[1]-gcn_outputs[1])
