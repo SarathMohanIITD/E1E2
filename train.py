@@ -162,7 +162,7 @@ for i in range(len(bounded_outputs)):
     gcn_outputs[i]=gcn_outputs[i].detach().numpy()
     gcnAtt_outputs[i]=gcnAtt_outputs[i].detach().numpy()
 
-print(bounded_outputs-gcn_outputs)
+#print(bounded_outputs-gcn_outputs)
 
 err1 =np.zeros((len(bounded_outputs), 16))
 err2 = np.zeros((len(bounded_outputs), 16))
