@@ -151,10 +151,12 @@ model.test(idx_test)
 
 # GCN without ptb
 
+
 gcn_outputs=model.fit(features, adj, labels, idx_train, idx_val, verbose=True, train_iters=args.epochs)
 model.test(idx_test)
 
 
 ##############################################################################################################
-
+bounded_outputs[1]= np.array(bounded_outputs[1])
+bounded_outputs.shape
 print(bounded_outputs[1]-gcn_outputs[1])
