@@ -246,7 +246,7 @@ class BoundedGCN(nn.Module):
 
             self.eval()
             output,emb = self.forward(self.features, self.adj_norm)
-            if i%10==0
+            if i%10==0:
                 self.list.append(emb)
 
             loss_val = F.nll_loss(output[idx_val], labels[idx_val])
