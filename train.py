@@ -157,6 +157,6 @@ model.test(idx_test)
 
 
 ##############################################################################################################
-bounded_outputs= pd.DataFrame(bounded_outputs)
-bounded_outputs.shape
+bounded_outputs[1]=bounded_outputs[1].detach().numpy()
+bounded_outputs[1].shape
 print(bounded_outputs[1]-gcn_outputs[1])
