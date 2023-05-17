@@ -191,7 +191,7 @@ class GCN(nn.Module):
                 self._train_with_early_stopping(labels, idx_train, idx_val, train_iters, patience, verbose)
             else:
                 self._train_with_val(labels, idx_train, idx_val, train_iters, verbose)
-
+        return self.list
     def _train_without_val(self, labels, idx_train, train_iters, verbose):
         self.train()
         optimizer = optim.Adam(self.parameters(), lr=self.lr, weight_decay=self.weight_decay)
