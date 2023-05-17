@@ -158,5 +158,6 @@ model.test(idx_test)
 
 ##############################################################################################################
 bounded_outputs[1]=bounded_outputs[1].detach().numpy()
-bounded_outputs[1].shape
-print(bounded_outputs[1]-gcn_outputs[1])
+print(bounded_outputs[1].shape)
+print(len(bounded_outputs))
+#print(bounded_outputs[1]-gcn_outputs[1])
